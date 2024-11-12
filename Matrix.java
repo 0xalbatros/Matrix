@@ -3,11 +3,12 @@ import java.util.function.BiFunction;
 
 public class Matrix {
     private double[][] matrix;
-    private int sizeX;         
-    private int sizeY;         
+    private int sizeX;
+    private int sizeY;
 
     /**
      * Constructor que inicializa la matriz y sus dimensiones
+     * 
      * @param _matrix La matriz bidimensional de tipo double[][]
      */
     public Matrix(double[][] _matrix) {
@@ -18,15 +19,16 @@ public class Matrix {
 
     /**
      * Calcula el determinante de la matriz usando la expansión de cofactores.
+     * 
      * @return El determinante de la matriz.
      * 
-     * Fórmula general:
-     *  Para una matriz 2x2:
-     *      det(A) = a11 * a22 - a12 * a21
+     *         Fórmula general:
+     *         Para una matriz 2x2:
+     *         det(A) = a11 * a22 - a12 * a21
      * 
-     *  Para una matriz NxN (expansión por cofactores en la primera fila):
-     *      det(A) = Σ (-1)^i * a1i * det(M1i)
-     *      donde M1i es el menor de a1i.
+     *         Para una matriz NxN (expansión por cofactores en la primera fila):
+     *         det(A) = Σ (-1)^i * a1i * det(M1i)
+     *         donde M1i es el menor de a1i.
      */
     public double det() {
         if (this.sizeX == 2) { // Caso base para una matriz 2x2
@@ -43,8 +45,9 @@ public class Matrix {
 
     /**
      * Multiplica cada elemento de una fila por un escalar
+     * 
      * @param fila La fila de tipo double[] a multiplicar
-     * @param k El escalar de tipo double
+     * @param k    El escalar de tipo double
      * @return Una nueva fila con cada elemento multiplicado por k
      */
     public static double[] mulFila(double[] fila, double k) {
@@ -56,6 +59,7 @@ public class Matrix {
 
     /**
      * Calcula la diferencia elemento a elemento entre dos filas
+     * 
      * @param fila1 La primera fila de tipo double[]
      * @param fila2 La segunda fila de tipo double[]
      * @return Un nuevo arreglo double[] que representa la diferencia fila1 - fila2
@@ -69,20 +73,39 @@ public class Matrix {
     }
 
     /**
+     * Calcula la suma elemento a elemento entre dos filas
+     * 
+     * @param fila1 La primera fila de tipo double[]
+     * @param fila2 La segunda fila de tipo double[]
+     * @return Un nuevo arreglo double[] que representa la suma fila1 - fila2
+     */
+    public static double[] sumFilas(double[] fila1, double[] fila2) {
+        double[] result = new double[fila1.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = fila1[i] + fila2[i];
+        }
+        return result;
+    }
+
+    /**
      * Genera la submatriz "menor" excluyendo la fila y columna dadas
+     * 
      * @param x La fila a excluir
      * @param y La columna a excluir
-     * @return Una nueva matriz de tipo double[][] que representa el menor de la posición (y, x)
+     * @return Una nueva matriz de tipo double[][] que representa el menor de la
+     *         posición (y, x)
      */
     public double[][] menor(int x, int y) {
         double[][] result = new double[this.sizeX - 1][this.sizeY - 1];
         int positionX = 0, positionY = 0;
 
         for (int i = 0; i < this.sizeX; i++) {
-            if (i == x) continue;
+            if (i == x)
+                continue;
             positionX = 0;
             for (int j = 0; j < sizeY; j++) {
-                if (j == y) continue;
+                if (j == y)
+                    continue;
                 result[positionY][positionX] = this.matrix[i][j];
                 positionX++;
             }
@@ -93,6 +116,7 @@ public class Matrix {
 
     /**
      * Calcula la matriz transpuesta de la matriz dada
+     * 
      * @param matrix La matriz original de tipo double[][]
      * @return La matriz transpuesta de tipo double[][]
      */
@@ -110,13 +134,14 @@ public class Matrix {
 
     /**
      * Calcula el cofactor de la posición (x, y) de la matriz.
+     * 
      * @param x La fila de la posición.
      * @param y La columna de la posición.
      * @return El cofactor de tipo double.
      * 
-     * Fórmula:
-     *      C_ij = (-1)^(i+j) * det(M_ij)
-     *      donde M_ij es el menor de la posición (i, j).
+     *         Fórmula:
+     *         C_ij = (-1)^(i+j) * det(M_ij)
+     *         donde M_ij es el menor de la posición (i, j).
      */
     public double cofactor(int x, int y) {
         double[][] menor = this.menor(x, y);
@@ -125,6 +150,7 @@ public class Matrix {
 
     /**
      * Calcula la matriz de cofactores de la matriz actual
+     * 
      * @return Una nueva matriz de tipo double[][] que representa los cofactores
      */
     public double[][] matrixCofactores() {
@@ -133,10 +159,11 @@ public class Matrix {
 
     /**
      * Calcula la matriz adjunta de la matriz actual.
+     * 
      * @return La matriz adjunta de tipo double[][]
      * 
-     * Fórmula:
-     *      adj(A) = Traspuesta de la Matriz de Cofactores
+     *         Fórmula:
+     *         adj(A) = Traspuesta de la Matriz de Cofactores
      */
     public double[][] adj() {
         return this.transpuesta(this.matrixCofactores());
@@ -144,10 +171,11 @@ public class Matrix {
 
     /**
      * Calcula la inversa de la matriz actual.
+     * 
      * @return La matriz inversa de tipo double[][]
      * 
-     * Fórmula:
-     *      inv(A) = (1/det(A)) * adj(A)
+     *         Fórmula:
+     *         inv(A) = (1/det(A)) * adj(A)
      */
     public double[][] inversa() {
         double det = this.det();
@@ -157,7 +185,9 @@ public class Matrix {
 
     /**
      * Aplica una función a cada elemento de la matriz
-     * @param callback Una función que toma un valor y su posición y retorna un valor modificado
+     * 
+     * @param callback Una función que toma un valor y su posición y retorna un
+     *                 valor modificado
      * @return Una nueva matriz con los valores modificados
      */
     public double[][] map(BiFunction<Double, int[], Double> callback) {
@@ -171,8 +201,64 @@ public class Matrix {
         return result;
     }
 
+    public double[] mulFila(double[] fila1, double[] fila2) {
+        double[] result = new double[fila1.length];
+        for (int i = 0; i < fila1.length; i++) {
+            result[i] = fila1[i] * fila2[i];
+        }
+        return result;
+    }
+
+    /**
+     * Multiplica esta matriz por otra matriz dada.
+     * 
+     * @param _matrix La matriz por la cual se multiplicará esta matriz.
+     * @return Una nueva matriz que representa el producto de esta matriz y la
+     *         matriz dada.
+     */
+    public Matrix mulMatrix(double[][] _matrix) {
+        double[][] result = new double[this.matrix.length][_matrix[0].length];
+    
+        for (int i = 0; i < this.matrix.length; i++) {
+            for (int j = 0; j < _matrix[0].length; j++) {
+                double sum = 0;
+                for (int k = 0; k < this.matrix[0].length; k++) {
+                    sum += this.matrix[i][k] * _matrix[k][j];
+                }
+                result[i][j] = sum;
+            }
+        }
+    
+        return new Matrix(result);
+    }
+
+    /**
+     * Multiplica esta matriz por otra matriz dada.
+     * 
+     * @param _matrix La matriz por la cual se multiplicará esta matriz.
+     * @return Una nueva matriz que representa el producto de esta matriz y la
+     *         matriz dada.
+     */
+    public Matrix mulMatrix(Matrix _matrix) {
+        double[][] _m = _matrix.matrix;
+        double[][] result = new double[this.matrix.length][_m[0].length];
+    
+        for (int i = 0; i < this.matrix.length; i++) {
+            for (int j = 0; j < _m[0].length; j++) {
+                double sum = 0;
+                for (int k = 0; k < this.matrix[0].length; k++) {
+                    sum += this.matrix[i][k] * _m[k][j];
+                }
+                result[i][j] = sum;
+            }
+        }
+    
+        return new Matrix(result);
+    }
+
     /**
      * Convierte la matriz a una representación legible en forma de cadena
+     * 
      * @param _matrix La matriz a convertir
      * @return La representación en cadena de la matriz
      */
@@ -180,9 +266,11 @@ public class Matrix {
         StringBuilder prettyMatrix = new StringBuilder();
         for (int i = 0; i < _matrix.length; i++) {
             for (int j = 0; j < _matrix[i].length; j++) {
-                if (j == 0) prettyMatrix.append("[");
+                if (j == 0)
+                    prettyMatrix.append("[");
                 prettyMatrix.append(String.format((j < _matrix[i].length - 1) ? "%.2f, " : "%.2f", _matrix[i][j]));
-                if (j == _matrix[i].length - 1) prettyMatrix.append("]");
+                if (j == _matrix[i].length - 1)
+                    prettyMatrix.append("]");
             }
             prettyMatrix.append((i != _matrix[i].length - 1) ? "\n " : "\n");
         }
@@ -196,13 +284,16 @@ public class Matrix {
                 { -1, 5, 1 }
         };
         double[][] B = {
-            {1,2,-1,2,1},
-            {2,4,1,-2,3},
-            {3,6,2,-6,5}
+                { 1, 2, -1, 2, 1 },
+                { 2, 4, 1, -2, 3 },
+                { 3, 6, 2, -6, 5 }
         };
-        System.out.printf("A:\n %s", Matrix.pretty(A));
         Matrix matrix = new Matrix(A);
+        Matrix matrix2 = new Matrix(B);
         double[][] m3 = matrix.map((v, p) -> v * 3);
+        double[] mulFila = matrix.mulFila(A[0], A[1]);
+
+        System.out.printf("A:\n %s", Matrix.pretty(A));
         System.out.printf("A * 3:\n %s", Matrix.pretty(m3));
         System.out.printf("Menor de (1,0):\n %s", Matrix.pretty(matrix.menor(1, 0)));
         System.out.printf("Determinante: %.2f \n", matrix.det());
@@ -211,5 +302,7 @@ public class Matrix {
         System.out.printf("Inversa:\n %s", Matrix.pretty(matrix.inversa()));
         System.out.printf("B:\n %s", Matrix.pretty(B));
         System.out.printf("De B, Fila2 - 2Fila1: \n %s \n", Arrays.toString(difFilas(B[1], Matrix.mulFila(B[0], 2))));
+        System.out.printf("De A, F1 * F2 = \n %s \n", Arrays.toString(mulFila));
+        System.out.printf("A * B = \n %s \n", Matrix.pretty(matrix.mulMatrix(matrix2).matrix));
     }
 }
