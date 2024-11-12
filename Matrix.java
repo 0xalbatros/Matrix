@@ -21,23 +21,38 @@ public class Matrix {
 
         for (int i = 0; i < this.sizeX; i++) {
             double[][] menor = this.menor(0, i);
-            result += Math.pow(-1, i) * matrix[0][i] * new Matrix(menor).det();
+            result += Math.pow(-1, i) * this.matrix[0][i] * new Matrix(menor).det();
+        }
+        return result;
+    }
+
+    public static double[] mulFila(double[] fila, double k){
+        for (int i = 0; i < fila.length; i++){
+            fila[i] *= k;
+        }
+        return fila;
+    }
+
+    public static double[] difFilas(double[] fila1, double[] fila2){
+        double[] result = new double[fila1.length];
+        for (int i = 0; i < result.length; i++) {
+            result[i] = fila1[i] - fila2[i];
         }
         return result;
     }
 
     public double[][] menor(int y, int x) {
-        double[][] result = new double[sizeX - 1][sizeY - 1];
+        double[][] result = new double[this.sizeX - 1][this.sizeY - 1];
         int positionX = 0, positionY = 0;
 
-        for (int i = 0; i < sizeX; i++) {
+        for (int i = 0; i < this.sizeX; i++) {
             if (i == y)
                 continue;
             positionX = 0;
             for (int j = 0; j < sizeY; j++) {
                 if (j == x)
                     continue;
-                result[positionY][positionX] = matrix[i][j];
+                result[positionY][positionX] = this.matrix[i][j];
                 positionX++;
             }
             positionY++;
@@ -63,27 +78,23 @@ public class Matrix {
     }
 
     public double[][] matrixCofactores() {
-        return this.map((value, position) -> this.cofactor(position[0], position[1]));
+        return this.map((v, p) -> this.cofactor(p[0], p[1]));
     }
 
     public double[][] adj() {
         return this.transpuesta(this.matrixCofactores());
     }
 
-    public double[][] multiplicarPorConstante(double constante) {
-        return this.map((value, position) -> value * constante);
-    }
-
     public double[][] inversa() {
         double det = this.det();
         Matrix adj = new Matrix(adj());
-        return adj.map((value, position) -> value * (1 / det));
+        return adj.map((v, p) -> v * (1 / det));
     }
 
     public double[][] map(BiFunction<Double, int[], Double> callback) {
-        double[][] result = new double[sizeX][sizeY];
-        for (int i = 0; i < sizeX; i++) {
-            for (int j = 0; j < sizeY; j++) {
+        double[][] result = new double[this.sizeX][this.sizeY];
+        for (int i = 0; i < this.sizeX; i++) {
+            for (int j = 0; j < this.sizeY; j++) {
                 int[] position = { i, j };
                 result[i][j] = callback.apply(this.matrix[i][j], position);
             }
@@ -91,38 +102,42 @@ public class Matrix {
         return result;
     }
 
-    public static void pretty(double[][] _matrix) {
+    public static String pretty(double[][] _matrix) {
         StringBuilder prettyMatrix = new StringBuilder();
         for (int i = 0; i < _matrix.length; i++) {
             for (int j = 0; j < _matrix[i].length; j++) {
                 if (j == 0)
                     prettyMatrix.append("[");
-                prettyMatrix.append(String.format("%.2f", _matrix[i][j]));
-                if (j < _matrix[i].length - 1)
-                    prettyMatrix.append("\t");
+                prettyMatrix.append(String.format((j < _matrix[i].length - 1) ? "%.2f, " : "%.2f", _matrix[i][j]));
                 if (j == _matrix[i].length - 1)
                     prettyMatrix.append("]");
             }
-            prettyMatrix.append("\n");
+            prettyMatrix.append((i != _matrix[i].length - 1) ? "\n " : "\n");
         }
-        System.out.println(prettyMatrix);
+        return prettyMatrix.toString();
     }
 
     public static void main(String[] args) {
-        double[][] m = {
+        double[][] A = {
                 { 1, 3, 4 },
                 { 3, -1, 6 },
                 { -1, 5, 1 }
         };
-        Matrix matrix = new Matrix(m);
+        double[][] B = {
+            {1,2,-1,2,1},
+            {2,4,1,-2,3},
+            {3,6,2,-6,5}
+        };
+        System.out.printf("A:\n %s", Matrix.pretty(A));
+        Matrix matrix = new Matrix(A);
         double[][] m3 = matrix.map((v, p) -> v * 3);
-        System.out.println("matrix * 3: " + Arrays.deepToString(m3));
-        System.out.println("Menor de (1,0): " + Arrays.deepToString(matrix.menor(1, 0)));
-        System.out.println("Determinante: " + matrix.det());
-        System.out.println("Transpuesta: " + Arrays.deepToString(matrix.transpuesta(m)));
-        System.out.println("matrix de Cofactores: " + Arrays.deepToString(matrix.matrixCofactores()));
-        System.out.println("Multiplicada por constante 2: " + Arrays.deepToString(matrix.multiplicarPorConstante(2)));
-        System.out.println("Inversa: " + Arrays.deepToString(matrix.inversa()));
-        Matrix.pretty(m);
+        System.out.printf("A * 3:\n %s", Matrix.pretty(m3));
+        System.out.printf("Menor de (1,0):\n %s", Matrix.pretty(matrix.menor(1, 0)));
+        System.out.printf("Determinante: %.2f \n", matrix.det());
+        System.out.printf("Transpuesta:\n %s", Matrix.pretty(matrix.transpuesta(A)));
+        System.out.printf("Matriz de Cofactores:\n %s", Matrix.pretty(matrix.matrixCofactores()));
+        System.out.printf("Inversa:\n %s", Matrix.pretty(matrix.inversa()));
+        System.out.printf("B:\n %s", Matrix.pretty(B));
+        System.out.printf("De B, Fila2 - 2Fila1: \n %s \n", Arrays.toString(difFilas(B[1], Matrix.mulFila(B[0], 2))));
     }
 }
