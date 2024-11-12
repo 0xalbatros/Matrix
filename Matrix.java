@@ -2,7 +2,7 @@ import java.util.Arrays;
 import java.util.function.BiFunction;
 
 public class Matrix {
-    private double[][] matrix;
+    public double[][] matrix;
     private int sizeX;
     private int sizeY;
 
