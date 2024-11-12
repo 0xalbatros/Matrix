@@ -17,8 +17,16 @@ public class Matrix {
     }
 
     /**
-     * Calcula el determinante de la matriz usando cofactores de forma recursiva
-     * @return El determinante de la matriz
+     * Calcula el determinante de la matriz usando la expansión de cofactores.
+     * @return El determinante de la matriz.
+     * 
+     * Fórmula general:
+     *  Para una matriz 2x2:
+     *      det(A) = a11 * a22 - a12 * a21
+     * 
+     *  Para una matriz NxN (expansión por cofactores en la primera fila):
+     *      det(A) = Σ (-1)^i * a1i * det(M1i)
+     *      donde M1i es el menor de a1i.
      */
     public double det() {
         if (this.sizeX == 2) { // Caso base para una matriz 2x2
@@ -88,23 +96,27 @@ public class Matrix {
      * @param matrix La matriz original de tipo double[][]
      * @return La matriz transpuesta de tipo double[][]
      */
-    public double[][] transpuesta(double[][] matrix) {
-        int sizeX = matrix.length;
-        int sizeY = matrix[0].length;
+    public double[][] transpuesta(double[][] _matrix) {
+        int sizeX = _matrix.length;
+        int sizeY = _matrix[0].length;
         double[][] result = new double[sizeY][sizeX];
         for (int i = 0; i < sizeY; i++) {
             for (int j = 0; j < sizeX; j++) {
-                result[j][i] = matrix[i][j];
+                result[j][i] = _matrix[i][j];
             }
         }
         return result;
     }
 
     /**
-     * Calcula el cofactor de la posición (x, y) de la matriz
-     * @param x La fila de la posición
-     * @param y La columna de la posición
-     * @return El cofactor de tipo double
+     * Calcula el cofactor de la posición (x, y) de la matriz.
+     * @param x La fila de la posición.
+     * @param y La columna de la posición.
+     * @return El cofactor de tipo double.
+     * 
+     * Fórmula:
+     *      C_ij = (-1)^(i+j) * det(M_ij)
+     *      donde M_ij es el menor de la posición (i, j).
      */
     public double cofactor(int x, int y) {
         double[][] menor = this.menor(x, y);
@@ -120,16 +132,22 @@ public class Matrix {
     }
 
     /**
-     * Calcula la matriz adjunta de la matriz actual
+     * Calcula la matriz adjunta de la matriz actual.
      * @return La matriz adjunta de tipo double[][]
+     * 
+     * Fórmula:
+     *      adj(A) = Traspuesta de la Matriz de Cofactores
      */
     public double[][] adj() {
         return this.transpuesta(this.matrixCofactores());
     }
 
     /**
-     * Calcula la inversa de la matriz actual
+     * Calcula la inversa de la matriz actual.
      * @return La matriz inversa de tipo double[][]
+     * 
+     * Fórmula:
+     *      inv(A) = (1/det(A)) * adj(A)
      */
     public double[][] inversa() {
         double det = this.det();
