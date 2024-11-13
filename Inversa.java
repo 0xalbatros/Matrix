@@ -13,7 +13,7 @@ public class Inversa extends Matrix {
      */
     public double[][] inversa() {
         double det = this.det();
-        Matrix adj = new Matrix(adj());
+        Matrix adj = new Matrix(this.adj());
         return adj.map((v, p) -> v * (1 / det));
     }
 }
